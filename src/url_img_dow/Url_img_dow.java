@@ -13,6 +13,8 @@ package url_img_dow;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.MalformedURLException;
@@ -25,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,7 +39,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Url_img_dow extends JFrame{
 
-    private JPanel p;
+    private JPanel p,jPanel1;
+    private Image imgeTmp;
     Container c = this.getContentPane();
 
     public Url_img_dow(String title) {
@@ -44,7 +48,7 @@ public class Url_img_dow extends JFrame{
     }
 
     public void init() throws MalformedURLException {
-
+        MediaTracker tracker = new MediaTracker(this);
 //        readfile();
 //        Dictionary dict = new Hashtable();
 //        dict.put("9b5b.jpg", "https://d2hsbzg80yxel6.cloudfront.net/images/69511/medium/16639037694fbdf3c729b5b.jpg");
@@ -83,7 +87,7 @@ public class Url_img_dow extends JFrame{
 //        JTree tree = new JTree(readfile(root, dict));
         JTree tree = new JTree(root);
 
-        tree.setPreferredSize(new Dimension(120, 400));
+        tree.setPreferredSize(new Dimension(250, 800));
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
@@ -101,8 +105,15 @@ public class Url_img_dow extends JFrame{
                     URL url;
                     url = urlimg(dict.get(st));
                     ImageIcon imc = new ImageIcon(url);
-                    l.setIcon(imc);
-                    l.setBounds(0, 0, imc.getIconWidth(), imc.getIconHeight());
+                    
+//                    p.add(reduceimg(imc,l));
+                    Image smallImg = reduceimg(imc);
+                    ImageIcon smallIcon = new ImageIcon(smallImg);
+//                    JLabel ll = new JLabel("0.5", smallIcon, JLabel.LEFT);
+                    
+                    l.setIcon(smallIcon);
+                    l.setBounds(0, 0, smallIcon.getIconWidth(), smallIcon.getIconHeight());
+                    p.add(l,BorderLayout.CENTER);
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(Url_img_dow.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -115,13 +126,27 @@ public class Url_img_dow extends JFrame{
 
         p = new JPanel();
         p.setLayout(null);
-        p.setPreferredSize(new Dimension(180, 400));
+        p.setPreferredSize(new Dimension(800, 800));
+        JButton jButton = new JButton("下載");
+        p.add(jButton, BorderLayout.SOUTH);
+        
         c.add(p, BorderLayout.CENTER);
-        this.setLocation(400, 300);
-        this.setSize(300, 400);
+        
+        this.setLocation(100, 20);
+        this.setSize(800, 600);
 //        this.setResizable(false);
         this.setVisible(true);
         this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+    }
+    
+    public Image reduceimg(ImageIcon icon){
+        
+        MediaTracker tracker = new MediaTracker(this);
+        Image smallImg = icon.getImage().getScaledInstance(
+                (int) (icon.getIconWidth() * 0.4), -1, Image.SCALE_SMOOTH);
+        Image bigImg = icon.getImage().getScaledInstance(
+                (int) (icon.getIconWidth() * 1.5), -1, Image.SCALE_SMOOTH);
+        return smallImg;
     }
 
     public URL urlimg(String imgsrc) throws MalformedURLException {
@@ -188,7 +213,7 @@ public class Url_img_dow extends JFrame{
     }
     
     public static void main(String[] args) throws MalformedURLException {
-        new Url_img_dow("Test Swing Jtree v1").init();
+        new Url_img_dow("Test Swing Jtree v2").init();
     }
     
 }

@@ -13,10 +13,15 @@ package url_img_dow;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Dictionary;
@@ -37,12 +42,14 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Url_img_dow extends JFrame{
+public class Url_img_dow extends JFrame  implements ActionListener  {
 
-    private JPanel p,jPanel1;
-    private Image imgeTmp;
+    private JPanel p, jPanel1, pp;
+    JButton jButton ;
     Container c = this.getContentPane();
-
+    String strimg;
+            ConcurrentHashMap<String, String> dict = new ConcurrentHashMap<String, String>();
+    
     public Url_img_dow(String title) {
         super(title);
     }
@@ -54,7 +61,7 @@ public class Url_img_dow extends JFrame{
 //        dict.put("9b5b.jpg", "https://d2hsbzg80yxel6.cloudfront.net/images/69511/medium/16639037694fbdf3c729b5b.jpg");
 //        dict.put("05d7.jpg", "https://d2hsbzg80yxel6.cloudfront.net/images/79961/medium/4727157252b2f3806dd88.jpg");
 //        dict.put("dd88.jpg", "https://d2hsbzg80yxel6.cloudfront.net/images/79499/medium/503393760528f04c1305d7.jpg");
-        ConcurrentHashMap<String, String> dict = new ConcurrentHashMap<String, String>();
+
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("img");
 
@@ -103,6 +110,8 @@ public class Url_img_dow extends JFrame{
                 try {
 //                    URL url = new URL("https://d2hsbzg80yxel6.cloudfront.net/images/69511/medium/16639037694fbdf3c729b5b.jpg");
                     URL url;
+                    
+                    strimg = st;
                     url = urlimg(dict.get(st));
                     ImageIcon imc = new ImageIcon(url);
                     
@@ -127,9 +136,17 @@ public class Url_img_dow extends JFrame{
         p = new JPanel();
         p.setLayout(null);
         p.setPreferredSize(new Dimension(800, 800));
-        JButton jButton = new JButton("下載");
-        p.add(jButton, BorderLayout.SOUTH);
         
+        pp = new JPanel();
+        pp.setLayout(new FlowLayout());
+        jButton = new JButton("下載");
+        jButton.addActionListener(this);
+        
+        pp.add(jButton, BorderLayout.SOUTH);
+//        pp.repaint();
+        c.add(pp, BorderLayout.SOUTH);
+
+
         c.add(p, BorderLayout.CENTER);
         
         this.setLocation(100, 20);
@@ -137,6 +154,16 @@ public class Url_img_dow extends JFrame{
 //        this.setResizable(false);
         this.setVisible(true);
         this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+    }
+    
+    public void actionPerformed(ActionEvent e){
+        if (e.getSource() == jButton) {try {
+            //button_open不要加引号
+            Dowimg();
+            } catch (Exception ex) {
+                Logger.getLogger(Url_img_dow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } 
     }
     
     public Image reduceimg(ImageIcon icon){
@@ -211,6 +238,22 @@ public class Url_img_dow extends JFrame{
         return count;
 
     }
+    
+    public void Dowimg() throws Exception {
+        
+
+        URL url = new URL(dict.get(strimg));
+        FileOutputStream fos = new FileOutputStream("Dow/" + strimg, false);
+        InputStream is = url.openStream();
+        int r = 0;
+        while ((r = is.read()) != -1) {
+            fos.write(r);
+        }
+        fos.close();
+        System.out.println(strimg + "Down is OK");
+
+    }
+    
     
     public static void main(String[] args) throws MalformedURLException {
         new Url_img_dow("Test Swing Jtree v2").init();

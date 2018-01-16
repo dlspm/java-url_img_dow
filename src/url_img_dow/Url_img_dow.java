@@ -322,19 +322,10 @@ public class Url_img_dow extends JFrame implements ActionListener  {
             
         }else if(e.getSource() == Btnnews){
         
-//          String url = theTextField.getText();
+            String url = theTextField.getText();
             System.out.println(theTextField.getText());
-//            root.removeAllChildren();
 
-//                String encoding = "gb2312";
-//                //1.根据网络和页面的编码集 抓取网页的源代码
-//                String htmlResouce = GetHtmlResouceByURL(url, encoding); //GetHtmlResouceByURL() 會 return String 整個 html/XML  回來
-//                //System.out.println(htmlResouce);
-//
-//                //2.解析网页的源代码 jsoup jar包
-//                Document document = Jsoup.parse(htmlResouce, "UTF-8");
-//                System.out.println(document);
-//                Get_instagram_imgurl(document,url);
+            
             
             NewNode("Bd-Mw5iBVak.jpg");
         
@@ -395,7 +386,7 @@ public class Url_img_dow extends JFrame implements ActionListener  {
                 TreePath parentPath = m_tree.getSelectionPath();
 
                 //取得新節點的父節點
-                parentNode = (DefaultMutableTreeNode) m_tree.getLastSelectedPathComponent();
+                parentNode = (DefaultMutableTreeNode) (m_tree.getLastSelectedPathComponent());
                 if (parentNode == null) {
                     return;
                 }
